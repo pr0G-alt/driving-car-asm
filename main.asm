@@ -3,7 +3,7 @@
 
 
 .data
-include imgData\car.asm
+include .\imgData\car.asm
     posX dw ?
     posY dw ?
     width dw ?
@@ -14,7 +14,7 @@ include imgData\car.asm
     
 .code
 
-include funcs.asm
+include .\funcs.asm
 
 main proc
     mov ax, @data
