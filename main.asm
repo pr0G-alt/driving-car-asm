@@ -3,7 +3,7 @@
 
 
 .data
-include .\imgData\car.asm
+    include .\imgData\car.asm
     posX dw ?
     posY dw ?
     width dw ?
@@ -11,6 +11,7 @@ include .\imgData\car.asm
     rowStop dw ?
     colStop dw ?
     area dw ?
+    include .\imgData\bg.asm
     
 .code
 
@@ -77,14 +78,14 @@ moveDown:
     jmp drawCar
 
 moveLeft:
-    cmp posX, 0
+    cmp posX, 97
     je getInput
     call clearRight
     dec posX
     jmp drawCar
 
 moveRight:
-    cmp posX, 320-20
+    cmp posX, 320-20-97
     je getInput
     call clearLeft
     inc posX

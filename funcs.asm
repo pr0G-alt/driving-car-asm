@@ -1,3 +1,37 @@
+; background = draw background
+; init = initialize sprite data
+; draw = draw sprite
+; clearDown = clear upper row when moving down
+; clearUp = clear lower row when moving up
+; clearRight = clear right column when moving left
+; clearLeft = clear left row when moving right
+
+
+background proc
+    lea si, bgData
+    mov cx, 0
+    mov dx, 0
+    mov ah, 0ch
+    
+bgLoop:
+    mov al, [si]
+    int 10h
+    inc si
+    inc cx
+    cmp cx, 320
+    je bgNextLine
+    jmp bgLoop
+    
+bgNextLine:
+    mov cx, 0
+    inc dx
+    cmp dx, 200
+    jne bgLoop
+
+    ret
+    
+background endp
+
 init proc
     mov ax, width
     add ax, posX
@@ -43,7 +77,7 @@ clearDown proc
     dec dx
     mov ah, 0ch
 clearDownLoop:
-    mov al, 5
+    mov al, 23
     int 10h
     inc cx
     cmp cx, rowStop
@@ -57,7 +91,7 @@ clearUp proc
     mov dx, posY
     mov ah, 0ch
 clearUpLoop:
-    mov al, 5
+    mov al, 23
     int 10h
     inc cx
     cmp cx, rowStop
@@ -72,7 +106,7 @@ clearRight proc
     mov dx, posY
     mov ah, 0ch
 clearRightLoop:
-    mov al, 5
+    mov al, 23
     int 10h
     inc dx
     cmp dx, colStop
@@ -86,7 +120,7 @@ clearLeft proc
     mov dx, posY
     mov ah, 0ch
 clearLeftLoop:
-    mov al, 5
+    mov al, 23
     int 10h
     inc dx
     cmp dx, colStop
@@ -94,23 +128,3 @@ clearLeftLoop:
     
     ret
 clearLeft endp
-
-background proc
-    mov ah, 0ch
-bgLoop:
-    mov al, 5
-    int 10h
-    inc cx
-    cmp cx, 320
-    je bgNextLine
-    jmp bgLoop
-    
-bgNextLine:
-    mov cx, 0
-    inc dx
-    cmp dx, 200
-    jne bgLoop
-
-    ret
-    
-background endp
