@@ -3,6 +3,7 @@
 
 
 .data
+    include .\imgData\bg.asm
     include .\imgData\car.asm
     posX dw ?
     posY dw ?
@@ -11,7 +12,6 @@
     rowStop dw ?
     colStop dw ?
     area dw ?
-    include .\imgData\bg.asm
     
 .code
 
@@ -24,12 +24,10 @@ main proc
     mov al, 13h
     int 10h
     
-    mov cx, 0
-    mov dx, 0
     call background
    
     mov posX, 150
-    mov posY, 79
+    mov posY, 140
     
 drawCar:
     lea si, carData
@@ -65,36 +63,33 @@ getInput:
 
 moveUp:
     cmp posY, 0
-    je getInput
+    jle getInput
     call clearDown
-    dec posY
+    sub posY, 2
     jmp drawCar
 
 moveDown:
     cmp posY, 200-42
-    je getInput
+    jge getInput
     call clearUp
-    inc posY
+    add posY, 2
     jmp drawCar
 
 moveLeft:
-    cmp posX, 97
-    je getInput
+    cmp posX, 98
+    jle getInput
     call clearRight
-    dec posX
+    sub posX, 2
     jmp drawCar
 
 moveRight:
-    cmp posX, 320-20-97
-    je getInput
+    cmp posX, 320-20-98
+    jge getInput
     call clearLeft
-    inc posX
+    add posX, 2
     jmp drawCar
 
 exitGame:
-    mov ax, 03h
-    int 10h
-
     mov ax, 4C00h
     int 21h
     

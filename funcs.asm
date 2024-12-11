@@ -8,28 +8,15 @@
 
 
 background proc
+    mov posX, 0
+    mov posY, 0
     lea si, bgData
-    mov cx, 0
-    mov dx, 0
-    mov ah, 0ch
+    mov width, 320
+    mov height, 200
+    call init
+    call draw
     
-bgLoop:
-    mov al, [si]
-    int 10h
-    inc si
-    inc cx
-    cmp cx, 320
-    je bgNextLine
-    jmp bgLoop
-    
-bgNextLine:
-    mov cx, 0
-    inc dx
-    cmp dx, 200
-    jne bgLoop
-
     ret
-    
 background endp
 
 init proc
@@ -72,8 +59,10 @@ nextLine:
 draw endp
 
 clearDown proc
-    mov cx, posX
     mov dx, colStop
+    mov bx, 0
+clearDown2:
+    mov cx, posX
     dec dx
     mov ah, 0ch
 clearDownLoop:
@@ -82,13 +71,18 @@ clearDownLoop:
     inc cx
     cmp cx, rowStop
     jl clearDownLoop
+    inc bx
+    cmp bx, 2
+    jl clearDown2
     
     ret
 clearDown endp
 
 clearUp proc
+    mov bx, 0
     mov cx, posX
     mov dx, posY
+clearUp2:
     mov ah, 0ch
 clearUpLoop:
     mov al, 23
@@ -96,13 +90,19 @@ clearUpLoop:
     inc cx
     cmp cx, rowStop
     jl clearUpLoop
-    
+    inc dx
+    mov cx, posX
+    inc bx
+    cmp bx, 2
+    jl clearUp2
     ret
 clearUp endp
 
 clearRight proc
     dec rowStop
     mov cx, rowStop
+    mov bx, 0
+clearRight2:
     mov dx, posY
     mov ah, 0ch
 clearRightLoop:
@@ -111,12 +111,18 @@ clearRightLoop:
     inc dx
     cmp dx, colStop
     jl clearRightLoop
+    dec cx
+    inc bx
+    cmp bx, 2
+    jl clearRight2
     
     ret
 clearRight endp
 
 clearLeft proc
     mov cx, posX
+    mov bx, 0
+clearLeft2:
     mov dx, posY
     mov ah, 0ch
 clearLeftLoop:
@@ -125,6 +131,10 @@ clearLeftLoop:
     inc dx
     cmp dx, colStop
     jl clearLeftLoop
+    inc cx
+    inc bx
+    cmp bx, 2
+    jl clearLeft2
     
     ret
 clearLeft endp
