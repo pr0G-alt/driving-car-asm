@@ -4,8 +4,8 @@
 
 .data
     include .\imgData\car.asm
-    posX dw ?
-    posY dw ?
+    posX dw 150
+    posY dw 140
     width dw ?
     height dw ?
     rowStop dw ?
@@ -13,8 +13,8 @@
     
 .code
 
-include .\preFuncs.asm
 include .\funcs.asm
+include .\draw.asm
 
 main proc
     mov ax, @data
@@ -24,8 +24,11 @@ main proc
     int 10h
     
     call background
-   
+    
+gameLoop: 
     call car
+    
+    jmp gameLoop
 
 
 main endp
