@@ -4,12 +4,18 @@
 
 .data
     include .\imgData\car.asm
-    posX dw 150
-    posY dw 140
+    include .\imgData\hole.asm
+    posX dw ?
+    posY dw ?
     width dw ?
     height dw ?
     rowStop dw ?
     colStop dw ?
+    carX dw 150
+    carY dw 140
+    holeX dw 100
+    enemyY dw 20
+    speed dw ?
     
 .code
 
@@ -26,6 +32,7 @@ main proc
     call background
     
 gameLoop: 
+    call hole
     call car
     
     jmp gameLoop

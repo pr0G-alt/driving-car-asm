@@ -53,7 +53,7 @@ clearDownLoop:
     cmp cx, rowStop
     jl clearDownLoop
     inc bx
-    cmp bx, 2
+    cmp bx, speed
     jl clearDown2
     
     ret
@@ -74,7 +74,7 @@ clearUpLoop:
     inc dx
     mov cx, posX
     inc bx
-    cmp bx, 2
+    cmp bx, speed
     jl clearUp2
     ret
 clearUp endp
@@ -94,7 +94,7 @@ clearRightLoop:
     jl clearRightLoop
     dec cx
     inc bx
-    cmp bx, 2
+    cmp bx, speed
     jl clearRight2
     
     ret
@@ -114,7 +114,7 @@ clearLeftLoop:
     jl clearLeftLoop
     inc cx
     inc bx
-    cmp bx, 2
+    cmp bx, speed
     jl clearLeft2
     
     ret

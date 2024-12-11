@@ -44,8 +44,13 @@ background endp
 car proc
 drawCar:
     lea si, carData
+    mov ax, carX
+    mov posX, ax
+    mov ax, carY
+    mov posY, ax
     mov width, 20
     mov height, 42
+    mov speed, 4
     call init
     call draw
     
@@ -75,31 +80,35 @@ getInput:
     jmp noInput
 
 moveUp:
-    cmp posY, 0
+    cmp carY, 0
     jle noInput
     call clearDown
-    sub posY, 2
+    mov ax, speed
+    sub carY, ax
     jmp drawCar
 
 moveDown:
-    cmp posY, 200-42
+    cmp carY, 200-42
     jge noInput
     call clearUp
-    add posY, 2
+    mov ax, speed
+    add carY, ax
     jmp drawCar
 
 moveLeft:
-    cmp posX, 98
+    cmp carX, 98
     jle noInput
     call clearRight
-    sub posX, 2
+    mov ax, speed
+    sub carX, ax
     jmp drawCar
 
 moveRight:
-    cmp posX, 320-20-98
+    cmp carX, 320-20-98
     jge noInput
     call clearLeft
-    add posX, 2
+    mov ax, speed
+    add carX, ax
     jmp drawCar
     
 noInput:
@@ -109,3 +118,25 @@ exitGame:
     mov ax, 4C00h
     int 21h
 car endp
+
+hole proc
+holeDraw:
+    cmp enemyY, 147
+    je skip
+    lea si, holeData
+    mov ax, holeX
+    mov posX, ax
+    mov ax, enemyY
+    mov posY, ax
+    mov width, 90
+    mov height, 53
+    mov speed, 1
+    call init
+    call draw
+    call clearUp
+    inc enemyY
+skip:
+    ret
+
+hole endp
+    
