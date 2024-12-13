@@ -12,17 +12,17 @@
     rowStop dw ?
     colStop dw ?
     speed dw ?
-    randSize dw 2
+    randSize dw 3
     randVal dw ?
-    randArr dw 100, 130
+    randArr dw 100, 130, 160
     randIdx dw 0
     randSeed dw 1234
     carX dw 150
     carY dw 140
     holeX dw ?
-    enemyY dw ?
-    clipVal dw 0
-    ticks dw 500
+    holeY dw -52
+    coneX dw ?
+    coneY dw ?
 
     
 .code
@@ -31,6 +31,7 @@ include .\funcs.asm
 include .\draw.asm
 
 main proc
+main:
     mov ax, @data
     mov ds, ax
     mov ah, 0h
@@ -39,8 +40,9 @@ main proc
     
     call background
     
-    mov holeX, 100
-    mov enemyY, -52
+    call rand
+    mov ax, randVal
+    mov holeX, ax
     
 gameLoop: 
     call hole

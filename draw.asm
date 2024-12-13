@@ -13,22 +13,22 @@ background proc
 drawBgLoop:
     int 10h
     inc cx
-    cmp cx, 90
+    cmp cx, 88
     jl drawBgLoop
     mov al, 15
+    cmp cx, 93
+    jl drawBgLoop
+    mov al, 29
     cmp cx, 95
     jl drawBgLoop
-    mov al, 29
-    cmp cx, 97
-    jl drawBgLoop
     mov al, 23
-    cmp cx, 320-97
-    jl drawBgLoop
-    mov al, 29
     cmp cx, 320-95
     jl drawBgLoop
+    mov al, 29
+    cmp cx, 320-93
+    jl drawBgLoop
     mov al, 15
-    cmp cx, 320-90
+    cmp cx, 320-88
     jl drawBgLoop
     mov al, 2
     cmp cx, 320
@@ -51,7 +51,7 @@ drawCar:
     mov posY, ax
     mov width, 20
     mov height, 42
-    mov speed, 4
+    mov speed, 5
     call init
     call draw
     
@@ -97,7 +97,7 @@ moveDown:
     jmp drawCar
 
 moveLeft:
-    cmp carX, 98
+    cmp carX, 95
     jle noInput
     call clearRight
     mov ax, speed
@@ -105,7 +105,7 @@ moveLeft:
     jmp drawCar
 
 moveRight:
-    cmp carX, 320-20-98
+    cmp carX, 320-20-95
     jge noInput
     call clearLeft
     mov ax, speed
@@ -121,19 +121,15 @@ exitGame:
 car endp
 
 hole proc
-wait_loop:
-    dec ticks
-    cmp ticks, 0
-    jg holeSkip
 holeDraw:
-    cmp enemyY, 200
+    cmp holeY, 200
     je resetHole
     lea si, holeData
     mov ax, holeX
     mov posX, ax
-    mov ax, enemyY
+    mov ax, holeY
     mov posY, ax
-    mov width, 90
+    mov width, 57
     mov height, 53
     mov speed, 1
     
@@ -143,7 +139,7 @@ holeDraw:
     
     call clearUp
 
-    inc enemyY
+    inc holeY
 holeSkip:
     ret
     
@@ -151,7 +147,7 @@ resetHole:
     call rand
     mov ax, randVal
     mov holeX, ax
-    mov enemyY, -20
+    mov holeY, -52
     jmp holeSkip
 
 hole endp
