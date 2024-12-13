@@ -1,5 +1,6 @@
-; background = draw background
-; car = draw car
+; background = draw game background
+; car = draw player's car
+; hole = draw a hole
 
 
 background proc
@@ -120,9 +121,13 @@ exitGame:
 car endp
 
 hole proc
+wait_loop:
+    dec ticks
+    cmp ticks, 0
+    jg holeSkip
 holeDraw:
-    cmp enemyY, 147
-    je skip
+    cmp enemyY, 200
+    je resetHole
     lea si, holeData
     mov ax, holeX
     mov posX, ax
@@ -131,12 +136,23 @@ holeDraw:
     mov width, 90
     mov height, 53
     mov speed, 1
+    
     call init
+    call clip
     call draw
+    
     call clearUp
+
     inc enemyY
-skip:
+holeSkip:
     ret
+    
+resetHole:
+    call rand
+    mov ax, randVal
+    mov holeX, ax
+    mov enemyY, -20
+    jmp holeSkip
 
 hole endp
     

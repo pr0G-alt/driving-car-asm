@@ -11,11 +11,19 @@
     height dw ?
     rowStop dw ?
     colStop dw ?
+    speed dw ?
+    randSize dw 2
+    randVal dw ?
+    randArr dw 100, 130
+    randIdx dw 0
+    randSeed dw 1234
     carX dw 150
     carY dw 140
-    holeX dw 100
-    enemyY dw 20
-    speed dw ?
+    holeX dw ?
+    enemyY dw ?
+    clipVal dw 0
+    ticks dw 500
+
     
 .code
 
@@ -31,8 +39,12 @@ main proc
     
     call background
     
+    mov holeX, 100
+    mov enemyY, -52
+    
 gameLoop: 
     call hole
+
     call car
     
     jmp gameLoop

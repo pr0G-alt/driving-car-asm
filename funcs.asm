@@ -6,40 +6,83 @@
 ; clearRight = clear right column when moving left
 ; clearLeft = clear left row when moving right
 
+
+rand proc
+    mov ax, randSeed
+    mov dx, 25173
+    mul dx
+    add ax, 13849
+    mov randSeed, ax
+    xor dx, dx
+    mov cx, randSize
+    div cx
+    mov ax, dx
+    
+    mov bx, ax
+
+    lea si, randArr
+    shl bx, 1
+    add si, bx
+
+    mov ax, [si]
+    mov randVal, ax
+
+    ret
+rand endp
+
 init proc
     mov ax, width
     add ax, posX
-    mov rowStop, ax
+    mov rowStop, ax 
     mov ax, height
     add ax, posY
     mov colStop, ax
+   
     mov cx, posX
     mov dx, posY
     
-    ret
+    ret   
 init endp
+
+clip proc
+    cmp colStop, 200
+    jg clipDown
+clipStart:
+    mov ax, dx
+    test ax, ax
+    jns clipEnd
+    inc dx
+    add si, width
+    jmp clipStart
+clipEnd:
+    ret
+clipDown:
+    mov colStop, 200
+clip endp
 
 draw proc
     mov ah, 0ch
-    
+
 drawLoop:
+    
     mov al, [si]
     int 10h
-
+    
     inc si
     inc cx
     cmp cx, rowStop
-    jne drawLoop
-
+    jl drawLoop
+    
     mov cx, posX
     inc dx
     cmp dx, colStop
-    jne drawLoop
+    jl drawLoop
 
     ret
+    
 draw endp
 
-clearDown proc
+clearDown proc 
     mov dx, colStop
     mov bx, 0
 clearDown2:
@@ -55,11 +98,15 @@ clearDownLoop:
     inc bx
     cmp bx, speed
     jl clearDown2
-    
+
     ret
 clearDown endp
 
 clearUp proc
+    mov bx, height
+    cmp colStop, bx
+    jl clearUpSkip
+
     mov bx, 0
     mov cx, posX
     mov dx, posY
@@ -76,6 +123,7 @@ clearUpLoop:
     inc bx
     cmp bx, speed
     jl clearUp2
+clearUpSkip:
     ret
 clearUp endp
 
