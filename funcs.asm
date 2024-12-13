@@ -64,7 +64,6 @@ draw proc
     mov ah, 0ch
 
 drawLoop:
-    
     mov al, [si]
     int 10h
     

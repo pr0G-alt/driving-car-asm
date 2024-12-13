@@ -42,6 +42,18 @@ drawBgLoop:
     ret
 background endp
 
+heart proc
+    lea si, heartData
+    mov width, 18
+    mov height, 15
+    mov posX, 2
+    mov posY, 4
+    call init
+    call draw
+
+    ret
+heart endp
+
 car proc
 drawCar:
     lea si, carData
@@ -165,4 +177,31 @@ resetHole:
     jmp holeSkip
 
 hole endp
+
+gameOver proc
+    mov cx, 0
+    mov dx, 0
     
+    mov ah, 0ch
+    
+    mov al, 19
+drawGOLoop:
+    int 10h
+    inc cx
+    cmp cx, 320
+    jl drawGOLoop
+    mov cx, 0
+    inc dx
+    cmp dx, 200
+    jl drawGOLoop
+    
+    lea si, gameOverData
+    mov posX, 20
+    mov posY, 20
+    mov width, 266
+    mov height, 151
+    call init
+    call draw
+
+    ret
+gameOver endp

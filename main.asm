@@ -5,6 +5,8 @@
 .data
     include .\imgData\car.asm
     include .\imgData\hole.asm
+    include .\imgData\heart.asm
+    include .\imgData\gameOver.asm
     posX dw ?
     posY dw ?
     width dw ?
@@ -21,8 +23,6 @@
     carY dw ?
     holeX dw ?
     holeY dw ?
-    ;coneX dw ?
-    ;coneY dw ?
     
     health db 5
     carMidX dw ?
@@ -33,6 +33,7 @@
     distY dw ?
     detect dw 0
     ticks dw 1000
+    msg db 'Press any key to play$', 0
     
     
 .code
@@ -46,8 +47,23 @@ main proc
     mov ah, 0h
     mov al, 13h
     int 10h
+    
+    call background
+    mov ah, 02h
+    mov bh, 0
+    mov dh, 11
+    mov dl, 10
+    int 10h
+    mov ah, 09h
+    lea dx, msg
+    int 21h
+    
+    mov ah, 0h
+    int 16h
 restart:
     call background
+    
+    call heart
     
     mov carX, 150
     mov carY, 140
@@ -56,19 +72,17 @@ restart:
     call rand
     mov ax, randVal
     mov holeX, ax
-    
-    
+       
+    mov health, 5
     mov ah, 02h
     mov bh, 0
     mov dh, 1
     mov dl, 1
     int 10h
-
     mov dl, '5'
     mov ah, 02h
     int 21h
-    
-    mov health, 5
+      
 gameLoop:
     call hole
 
@@ -87,27 +101,34 @@ posDistX:
     test ax, ax
     jns posDistY
     neg ax
+    
 posDistY:
     mov distY, ax
     
-    cmp distX, 25
-    jg detectSkip1
-    
-    cmp distY, 25
-    jg detectSkip1
-    
-    jmp restart
-    
-detectSkip1:
-    
     cmp distX, 34
-    jg detectSkip2
+    jg detectSkip
     
     cmp distY, 30
-    jg detectSkip2
+    jg detectSkip
     
     mov detect, 1
-detectSkip2:
+    
+    cmp distX, 24
+    jg detectSkip
+    
+    cmp distY, 25
+    jg detectSkip
+    mov detect, 0
+restartHelp:
+    call gameOver
+    mov ah, 0h
+    int 16h
+    jmp restart
+    
+help:
+    jmp gameLoop
+    
+detectSkip:
     cmp detect, 1
     jne gameLoop
     
@@ -129,12 +150,8 @@ detectSkip2:
     int 21h
 
     cmp health, 0
-    jne posDistY
-    mov ax, 4C00h
-    int 21h
-    
-    jmp gameLoop
-
+    jne help
+    jmp restartHelp
 
 main endp
 
