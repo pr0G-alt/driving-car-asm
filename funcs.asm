@@ -61,18 +61,6 @@ clipDown:
 clip endp
 
 draw proc
-    mov ah, 0Dh
-    mov bh, 0
-    int 10h
-
-    mov bl, al
-    
-    cmp bl, 18
-    jne detectSkip
-    mov detect, 1
-    
-detectSkip:
-    
     mov ah, 0ch
 
 drawLoop:

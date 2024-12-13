@@ -1,5 +1,5 @@
-.model small
-.stack 100h
+.model medium
+.stack 1000h
 
 
 .data
@@ -21,9 +21,19 @@
     carY dw ?
     holeX dw ?
     holeY dw ?
-    coneX dw ?
-    coneY dw ?
+    ;coneX dw ?
+    ;coneY dw ?
+    
+    health db 5
+    carMidX dw ?
+    carMidY dw ?
+    holeMidX dw ?
+    holeMidY dw ?
+    distX dw ?
+    distY dw ?
     detect dw 0
+    ticks dw 1000
+    
     
 .code
 
@@ -37,29 +47,93 @@ main proc
     mov al, 13h
     int 10h
 restart:
-    
     call background
-
+    
     mov carX, 150
     mov carY, 140
-    mov detect, 0
     mov holeY, -52  
     
     call rand
     mov ax, randVal
     mov holeX, ax
     
-gameLoop: 
+    
+    mov ah, 02h
+    mov bh, 0
+    mov dh, 1
+    mov dl, 1
+    int 10h
+
+    mov dl, '5'
+    mov ah, 02h
+    int 21h
+    
+    mov health, 5
+gameLoop:
     call hole
 
     call car
     
-    cmp detect, 1
-    jne gameLoop
-    mov ah, 0h
-    int 16h
+    mov ax, carMidX
+    sub ax, holeMidX
+    test ax, ax
+    jns posDistX
+    neg ax
+posDistX:
+    mov distX, ax
+    
+    mov ax, carMidY
+    sub ax, holeMidY
+    test ax, ax
+    jns posDistY
+    neg ax
+posDistY:
+    mov distY, ax
+    
+    cmp distX, 25
+    jg detectSkip1
+    
+    cmp distY, 25
+    jg detectSkip1
     
     jmp restart
+    
+detectSkip1:
+    
+    cmp distX, 34
+    jg detectSkip2
+    
+    cmp distY, 30
+    jg detectSkip2
+    
+    mov detect, 1
+detectSkip2:
+    cmp detect, 1
+    jne gameLoop
+    
+    cmp distY, 40
+    jl gameLoop
+    
+    mov detect, 0
+    dec health
+    
+    mov ah, 02h
+    mov bh, 0
+    mov dh, 1
+    mov dl, 1
+    int 10h
+
+    mov dl, health
+    add dl, '0'
+    mov ah, 02h
+    int 21h
+
+    cmp health, 0
+    jne posDistY
+    mov ax, 4C00h
+    int 21h
+    
+    jmp gameLoop
 
 
 main endp

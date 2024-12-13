@@ -55,6 +55,13 @@ drawCar:
     call init
     call draw
     
+    mov ax, rowStop
+    sub ax, 10
+    mov carMidX, ax
+    mov ax, colStop
+    sub ax, 21
+    mov carMidY, ax
+    
 getInput:
     mov ah, 1h
     int 16h
@@ -136,6 +143,13 @@ holeDraw:
     call init
     call clip
     call draw
+    
+    mov ax, rowStop
+    sub ax, 28
+    mov holeMidX, ax
+    mov ax, colStop
+    sub ax, 26
+    mov holeMidY, ax
     
     call clearUp
 
