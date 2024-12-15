@@ -1,6 +1,9 @@
 ; background = draw game background
+; startMsg = draw start message to choose difficulty
+; heart = draw heart for health
 ; car = draw player's car
 ; hole = draw a hole
+; gameOver = draw GAME OVER message
 
 
 background proc
@@ -42,6 +45,24 @@ drawBgLoop:
     ret
 background endp
 
+startMsg proc
+    mov ah, 02h
+    mov dl, 9
+    mov dh, 10
+    int 10h
+    mov ah, 09h
+    lea dx, easyMsg
+    int 21h
+    mov ah, 02h
+    mov dl, 9
+    mov dh, 12
+    int 10h
+    mov ah, 09h
+    lea dx, hardMsg
+    int 21h
+    ret
+startMsg endp
+
 heart proc
     lea si, heartData
     mov width, 18
@@ -53,6 +74,21 @@ heart proc
 
     ret
 heart endp
+
+printHealth proc
+    mov ah, 2h
+    mov dh, 1
+    mov dl, 1
+    int 10h
+
+    mov dl, health
+    add dl, '0'
+    mov ah, 2h
+    int 21h
+    ret
+printHealth endp
+
+
 
 car proc
 drawCar:
@@ -142,7 +178,7 @@ car endp
 hole proc
 holeDraw:
     cmp holeY, 200
-    je resetHole
+    jge resetHole
     lea si, holeData
     mov ax, holeX
     mov posX, ax
@@ -150,7 +186,8 @@ holeDraw:
     mov posY, ax
     mov width, 57
     mov height, 53
-    mov speed, 1
+    mov ax, diff
+    mov speed, ax
     
     call init
     call clip
@@ -165,7 +202,8 @@ holeDraw:
     
     call clearUp
 
-    inc holeY
+    mov ax, speed
+    add holeY, ax
 holeSkip:
     ret
     
@@ -179,29 +217,20 @@ resetHole:
 hole endp
 
 gameOver proc
-    mov cx, 0
-    mov dx, 0
-    
-    mov ah, 0ch
-    
-    mov al, 19
-drawGOLoop:
+    mov ah, 02h
+    mov dl, 15
+    mov dh, 10
     int 10h
-    inc cx
-    cmp cx, 320
-    jl drawGOLoop
-    mov cx, 0
-    inc dx
-    cmp dx, 200
-    jl drawGOLoop
-    
-    lea si, gameOverData
-    mov posX, 20
-    mov posY, 20
-    mov width, 266
-    mov height, 151
-    call init
-    call draw
+    mov ah, 09h
+    lea dx, gameOverMsg
+    int 21h
+    mov ah, 02h
+    mov dl, 7
+    mov dh, 12
+    int 10h
+    mov ah, 09h
+    lea dx, enterMsg
+    int 21h
 
     ret
 gameOver endp

@@ -1,3 +1,8 @@
+; diffKey = wait to prees 1 or 2 for difficulty
+; enterKey = wait to press ENTER
+
+; rand = generate a random value from an array
+
 ; init = initialize image data
 ; draw = draw image with initialized data
 
@@ -6,6 +11,33 @@
 ; clearRight = clear right column when moving left
 ; clearLeft = clear left row when moving right
 
+diffKey proc
+diffWait:
+    mov ah, 0h
+    int 16h
+    cmp al, '1'
+    je easyMode
+    cmp al, '2'
+    je hardMode
+    
+    jmp diffWait
+    
+easyMode:
+    mov diff, 1 ; hole speed
+    ret   
+hardMode:
+    mov diff, 2
+    ret
+diffKey endp
+
+enterKey proc
+enterWait:
+    mov ah, 0h
+    int 16h
+    cmp al, 0dh
+    jne enterWait
+    ret
+enterKey endp
 
 rand proc
     mov ax, randSeed
@@ -46,7 +78,7 @@ init endp
 
 clip proc
     cmp colStop, 200
-    jg clipDown
+    jge clipDown
 clipStart:
     mov ax, dx
     test ax, ax
