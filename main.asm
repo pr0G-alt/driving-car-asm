@@ -1,6 +1,5 @@
-.model large
-.stack 9000h
-
+.model small
+.stack 100h
 
 .data
     ; ========= IMAGEs DATA ========= ;
@@ -28,7 +27,7 @@
     
     speed dw ?
     
-    health db 5
+    health db ?
     
     ; Sprites horizontal & vertical positions ;
     carX dw ?
@@ -56,10 +55,11 @@
     hardMsg db 'Press 2 for hard mode.$', 0
     diff dw ?
     
-    gameOverMsg db 'GAME OVER.$', 0
+    gameOverMsg db 'GAME OVER!$', 0
     enterMsg db 'Press ENTER to start again.$', 0
     
-    
+    exitMsg db 'Press ESC to exit.$', 0
+      
 .code
 
 include .\funcs.asm
@@ -192,7 +192,7 @@ detectSkip:
     ; ================================================= ;
     
     ; wait to move away from the hole ;
-    cmp distY, 35
+    cmp distY, 20
     jl gameLoop
     ; =============================== ;
     

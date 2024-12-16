@@ -4,6 +4,7 @@
 ; rand = generate a random value from an array
 
 ; init = initialize image data
+; clip = avoid problems with drawing outside the frame
 ; draw = draw image with initialized data
 
 ; clearDown = clear upper row when moving down
@@ -15,10 +16,14 @@ diffKey proc
 diffWait:
     mov ah, 0h
     int 16h
+    
+    ; check the pressed key to specify difficulty ;
     cmp al, '1'
     je easyMode
     cmp al, '2'
     je hardMode
+    cmp al, 1bh ; ESC key
+    je exit1
     
     jmp diffWait
     
@@ -28,14 +33,27 @@ easyMode:
 hardMode:
     mov diff, 2
     ret
+exit1:
+    mov ax, 4C00h
+    int 21h
+    ret
 diffKey endp
 
 enterKey proc
 enterWait:
     mov ah, 0h
     int 16h
-    cmp al, 0dh
-    jne enterWait
+    cmp al, 0dh ; ENTER key
+    je return
+    cmp al, 1bh
+    je exit2
+
+    jmp enterWait
+    
+exit2:
+    mov ax, 4C00h
+    int 21h
+return:
     ret
 enterKey endp
 
@@ -77,19 +95,20 @@ init proc
 init endp
 
 clip proc
-    cmp colStop, 200
+    cmp colStop, 200 ; check if vertical position is out of the bottom of the window
     jge clipDown
 clipStart:
     mov ax, dx
-    test ax, ax
+    test ax, ax ; check if vertical is out of the top of the window (negative)
     jns clipEnd
     inc dx
-    add si, width
+    add si, width ; go to the next row until reaching the row supposed to be drawn
     jmp clipStart
 clipEnd:
     ret
 clipDown:
     mov colStop, 200
+    ret
 clip endp
 
 draw proc
@@ -121,13 +140,13 @@ clearDown2:
     dec dx
     mov ah, 0ch
 clearDownLoop:
-    mov al, 23
+    mov al, 23 ; dark grey
     int 10h
     inc cx
     cmp cx, rowStop
     jl clearDownLoop
     inc bx
-    cmp bx, speed
+    cmp bx, speed ; clear number of rows depending of speed count
     jl clearDown2
 
     ret
